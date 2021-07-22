@@ -19,6 +19,10 @@ int main(int argc, char* argv[]) {
     const wchar_t input_dir[] = L"C:\\users\\Richard\\source\\repos\\TriageTool\\Debug\\input_dir";
 
     UINT32 number_of_files = setup_input_dir(L"E:\\fuzz\\test_dir", input_dir, extension);
+    if (number_of_files == 0) {
+        printf("Did not find any input\n");
+        return 1;
+    }
     printf("Found %d files.\n", number_of_files);
     UINT16* hashes_array = (UINT16*)malloc(number_of_files * sizeof(UINT16));
     if (hashes_array == NULL) {
