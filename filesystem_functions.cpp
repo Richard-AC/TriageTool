@@ -12,7 +12,7 @@ UINT32 setup_input_dir(const wchar_t* initial_dir, const wchar_t* input_dir, con
     int err = _wmkdir(input_dir);
     if (err == -1) {
         printf("mkdir failed.\n");
-        return 1;
+        return 0;
     }
 
     for (const auto& entry : fs::recursive_directory_iterator(initial_dir)) {
