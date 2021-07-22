@@ -12,13 +12,31 @@
 
 UINT16 EnterDebugLoop(const LPDEBUG_EVENT DebugEv);
 
-int main(int argc, char* argv[]) {
-    const wchar_t extension[] = L".dwg";
-    const wchar_t program_path[] = L"\"C:\\Program Files (x86)\\OpenText\\Brava! Desktop\\BravaDesktop.exe\"";
-    //const wchar_t program_path[] = L"C:\\Users\\Richard\\Documents\\winafl\\build32\\bin\\Release\\opentext_harness_5.exe";
-    const wchar_t input_dir[] = L"C:\\users\\Richard\\source\\repos\\TriageTool\\Debug\\input_dir";
+int wmain(int argc, wchar_t* wargv[]) {
+    if (argc < 4 || argc > 5) {
+        printf("Usage: TriageTool.exe <program path> <input dir> <output dir> [<extension>]\nUse absolute paths.\n");
+        printf("Example: TriageTool.exe C:\\myapp.exe C:\\infolder C:\\outfolder .pdf\n");
+        return 0;
+    }
+    const wchar_t* program_path = wargv[1];
+    const wchar_t* initial_dir = wargv[2];
+    const wchar_t* output_dir = wargv[3];
+    wchar_t input_dir[200] = L"";
+    const wchar_t input_dir_format[] = L"%s\\input_dir";
+    swprintf_s(input_dir, 200, input_dir_format, output_dir);
+    
+    const wchar_t* extension = L"";
+    if (argc == 5) {
+        extension = wargv[4];
+    }
 
-    UINT32 number_of_files = setup_input_dir(L"E:\\fuzz\\test_dir", input_dir, extension);
+    int err = _wmkdir(output_dir);
+    if (err == -1) {
+        printf("Failed to create output folder.\n");
+        return 1;
+    }
+
+    UINT32 number_of_files = setup_input_dir(initial_dir, input_dir, extension);
     if (number_of_files == 0) {
         printf("Did not find any input\n");
         return 1;
@@ -71,7 +89,7 @@ int main(int argc, char* argv[]) {
         CloseHandle(pi.hProcess);
         CloseHandle(pi.hThread);
     }
-    dispatch_input_files(hashes_array, number_of_files, input_dir, extension);
+    dispatch_input_files(hashes_array, number_of_files, input_dir, output_dir, extension);
     return 0;
 }
 
