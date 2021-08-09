@@ -57,8 +57,6 @@ int wmain(int argc, wchar_t* wargv[]) {
         ZeroMemory(&si, sizeof(si));
         si.cb = sizeof(si);
         ZeroMemory(&pi, sizeof(pi));
-        //swprintf_s(input_path, 150, L"C:\\Users\\Richard\\Documents\\winafl\\build32\\bin\\Release\\opentext_harness_5.exe E:\\Fuzz\\crash\\input_%d.dwg", i);
-        //swprintf_s(input_path, 150, L"\"C:\\Program Files (x86)\\OpenText\\Brava! Desktop\\BravaDesktop.exe\" E:\\Fuzz\\crash\\input_0000%d.dwg", i);
         swprintf_s(input_path, 200, input_path_format, program_path, input_dir, i, extension);
 
         if (!CreateProcess(NULL,
@@ -134,7 +132,7 @@ UINT16 EnterDebugLoop(const LPDEBUG_EVENT DebugEv) {
             // We count the number of exceptions. 
             // In a non-crashing run this number should be 1 (initial breakpoint) otherwise it is > 1.
             nbr_of_exceptions++;
-            hash += (UINT16) context.Eip;
+            hash += (UINT16) (context.Eip * (context.Eip + 3));
             debug_print(L"EXCEPTION_DEBUG_EVENT Exception Code: ");
 
             switch (DebugEv->u.Exception.ExceptionRecord.ExceptionCode) {
@@ -175,10 +173,6 @@ UINT16 EnterDebugLoop(const LPDEBUG_EVENT DebugEv) {
             break;
 
         case CREATE_THREAD_DEBUG_EVENT:
-            // As needed, examine or change the thread's registers 
-            // with the GetThreadContext and SetThreadContext functions; 
-            // and suspend and resume thread execution with the 
-            // SuspendThread and ResumeThread functions. 
             debug_print(L"CREATE_THREAD_DEBUG_EVENT\n");
             break;
 
@@ -187,12 +181,11 @@ UINT16 EnterDebugLoop(const LPDEBUG_EVENT DebugEv) {
             break;
 
         case EXIT_THREAD_DEBUG_EVENT:
-            // Display the thread's exit code. 
             debug_print(L"EXIT_THREAD_DEBUG_EVENT\n");
+            debug_print(L"Thread exited with code:  0x%x\n", DebugEv->u.ExitThread.dwExitCode);
             break;
 
         case EXIT_PROCESS_DEBUG_EVENT:
-            // Display the process's exit code. 
             debug_print(L"EXIT_PROCESS_DEBUG_EVENT\n");
             debug_print(L"Process exited with code:  0x%x\n", DebugEv->u.ExitProcess.dwExitCode);
             if (nbr_of_exceptions > 1) {
