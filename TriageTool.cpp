@@ -32,7 +32,7 @@ int wmain(int argc, wchar_t* wargv[]) {
 
     int err = _wmkdir(output_dir);
     if (err == -1) {
-        printf("Failed to create output folder.\n");
+        printf("Failed to create output folder. The folder might already exist.\n");
         return 1;
     }
 
@@ -79,7 +79,7 @@ int wmain(int argc, wchar_t* wargv[]) {
         // Debugger loop 
         UINT16 hash = EnterDebugLoop(&DebugEv);
         hashes_array[i] = hash;
-        printf("hash : 0x%04X\n", hash);
+        printf("%d. hash : 0x%04X\n", i, hash);
         DebugActiveProcessStop(pi.dwProcessId);
         TerminateProcess(pi.hProcess, 0);
 

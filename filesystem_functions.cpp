@@ -11,7 +11,7 @@ UINT32 setup_input_dir(const wchar_t* initial_dir, const wchar_t* input_dir, con
     wchar_t current_filepath[200] = L"";
     int err = _wmkdir(input_dir);
     if (err == -1) {
-        printf("mkdir failed.\n");
+        printf("mkdir failed. The directory might already exist.\n");
         return 0;
     }
 
