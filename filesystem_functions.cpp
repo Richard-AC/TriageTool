@@ -17,8 +17,6 @@ UINT32 setup_input_dir(const wchar_t* initial_dir, const wchar_t* input_dir, con
 
     for (const auto& entry : fs::recursive_directory_iterator(initial_dir)) {
         swprintf_s(current_filepath, 200, format, input_dir, i, extension);
-        //printf("%ls\n", entry.path().c_str());
-        //wprintf(L"%s\n", current_filepath);
         if (entry.is_directory()) {
             continue;
         }
