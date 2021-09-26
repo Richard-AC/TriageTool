@@ -121,9 +121,9 @@ UINT16 EnterDebugLoop(const LPDEBUG_EVENT DebugEv) {
             L"EDX = %08X ESI = %08X EDI = %08X\n"
             L"EIP = %08X ESP = %08X EBP = %08X\n"
             L"EFL = %08X",
-            context.Eax, context.Ebx, context.Ecx,
-            context.Edx, context.Esi, context.Edi,
-            context.Eip, context.Esp, context.Ebp,
+            context.Rax, context.Rbx, context.Rcx,
+            context.Rdx, context.Rsi, context.Rdi,
+            context.Rip, context.Rsp, context.Rbp,
             context.EFlags
         );
 
@@ -132,7 +132,7 @@ UINT16 EnterDebugLoop(const LPDEBUG_EVENT DebugEv) {
             // We count the number of exceptions. 
             // In a non-crashing run this number should be 1 (initial breakpoint) otherwise it is > 1.
             nbr_of_exceptions++;
-            hash += (UINT16) (context.Eip * (context.Eip + 3));
+            hash += (UINT16) (context.Rip * (context.Rip + 3));
             debug_print(L"EXCEPTION_DEBUG_EVENT Exception Code: ");
 
             switch (DebugEv->u.Exception.ExceptionRecord.ExceptionCode) {
